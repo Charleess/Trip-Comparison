@@ -1,0 +1,108 @@
+body {
+    display: block;
+    min-height: 100vh;
+}
+
+.red-tab {
+    background-color: #C51317;
+    display: flex;
+    min-height: 35px;
+}
+
+.footer {
+    padding: 0.5rem 1.5rem 0.5rem;
+}
+
+.footer a {
+    color: #C51317
+}
+
+.container {
+    margin-top: 5px;
+}
+
+#mapContainer {
+    height: 252px;
+}
+
+#data-input-tile {
+    min-height: 292px;
+}
+
+li.is-active a {
+    background-color: #C51317 !important;
+    border: none !important;
+}
+
+/*Dropdown*/
+.dropdown_car{
+    /*position: absolute;*/
+    z-index: 2;
+    position: absolute;
+}
+
+div.mode_transport.tabs.is-toggle.is-fullwidth {
+    margin-bottom: 0;
+}
+
+li.dropdown_car_item {
+    background-color: #fff;
+}
+
+/*Tiles*/
+div.tile-results > span {
+    float: left;
+    padding-right: 10px;
+}
+
+div.tile-results > p.title {
+    font-size: 1rem;
+}
+
+/*Prettify the numbers in the boxes*/
+div.container-flex {
+    display: flex;
+    justify-content: space-around;
+    font-size: 2em;
+}
+
+/*Notifications*/
+div.notification.is-danger {
+    z-index: 20;
+    position: absolute;
+    max-width: 400px;
+}
+
+/* Breakpoint widescreen*/
+@media (max-width: 1384px){
+    .mode_transport{
+        font-size: 0.88rem;
+    }
+}
+
+/* Breakpoint desktop*/
+@media (max-width: 1192px){
+    .mode_transport{
+        font-size: 0.68rem;
+    }
+    p.title{
+        font-size: 1.5rem;
+    }
+    p.content{
+        font-size: 1.5rem;
+    }
+}
+
+/* Breakpoint for the text */
+@media (max-width: 945px){
+    .mode_transport{
+        font-size: 0.5rem;
+    }
+}
+
+/* Breakpoint mobile*/
+@media (max-width: 768px){
+    .mode_transport{
+        font-size: 0.9rem;
+    }
+}

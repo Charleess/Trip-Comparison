@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+  	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="initial-scale=1.0, width=device-width" />
+    <title>Trip Comparison</title>
+    	<!-- API Here -->
+    <script type="text/javascript" src="https://js.cit.api.here.com/v3/3.0/mapsjs-core.js"></script>
+	<script type="text/javascript" src="https://js.cit.api.here.com/v3/3.0/mapsjs-service.js"></script>
+	<script type="text/javascript" src="https://js.cit.api.here.com/v3/3.0/mapsjs-ui.js"></script>
+	<script type="text/javascript" src="https://js.cit.api.here.com/v3/3.0/mapsjs-mapevents.js"></script>
+
+	<script
+  		src="https://code.jquery.com/jquery-3.2.1.min.js"
+  		integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+  		crossorigin="anonymous">
+  	</script>
+    <script
+        src="assets/scripts/jquery.js">
+    </script>
+    <script
+        src="assets/scripts/mapping.js">
+    </script>
+
+	<!-- CSS -->  
+	<link type="text/css" rel="stylesheet" href="node_modules/bulma/css/bulma.css">
+	<link type="text/css" rel="stylesheet" href="node_modules/font-awesome/css/font-awesome.css">
+	<link type="text/css" rel="stylesheet" href="assets/css/main.css">
+</head>
+
+<body>
+    <div class="red-tab"></div>
+    <div class="nav">
+        <div class="nav-left">
+        </div>
+        <div class="nav-center">
+            <a class="nav-item" href="http://www.arval.fr">
+                <img src="assets/img/logo.png">
+            </a>
+        </div>
+
+        <span class="nav-toggle">
+            <span></span>
+            <span></span>
+            <span></span>
+        </span>
+
+        <div class="nav-right nav-menu">
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="tile is-ancestor">
+            <div class="tile is-6 is-vertical is-parent">
+                <div class="tile is-child box" id="data-input-tile">
+                    <p class="title">Trip data</p>
+                    <div id="groupStart" class="field">
+                        <label class="label">From</label>
+                        <p class='control has-icons-right'>
+                            <input type="text" id="start" class="input" placeholder="ex: Paris">
+                            <span class="icon is-small is-right is-hidden" id="start_adress_valid">
+                                <i class="fa fa-check"></i>
+                            </span>
+                            <span class="icon is-small is-right is-hidden" id="start_adress_invalid">
+                                <i class="fa fa-error"></i>
+                            </span>
+                        </p>
+                        <p class='help is-success is-hidden'>This adress is valid</p>
+                        <p class='help is-danger is-hidden'>This adress is not valid</p>
+                    </div>
+                        
+                    <div id="groupEnd" class="field">
+                        <label class="label">To</label>
+                        <p class='control has-icons-right'>
+                            <input type="text" id="end" class="input" placeholder="ex: Lyon">
+                            <span class="icon is-small is-right is-hidden" id="end_adress_valid">
+                                <i class="fa fa-check"></i>
+                            </span>
+                            <span class="icon is-small is-right is-hidden" id="end_adress_invalid">
+                                <i class="fa fa-error"></i>
+                            </span>
+                        </p>
+                        <p class='help is-success is-hidden'>This adress is valid</p>
+                        <p class='help is-danger is-hidden'>This adress is not valid</p>
+                    </div>
+                </div>
+                <div class="tile is-child box">
+                    <p class='title'>Current Trip</p>
+                    <div class="mode_transport tabs is-toggle is-fullwidth">
+                        <ul>
+                            <li value="car" class="mode_actuel_toggle car_toggle">
+                                <a>
+                                    <span class="icon is-small"><i class="fa fa-car"></i></span>
+                                    <span id="mode_actuel_voiture">Driving</span>
+                                    <span class="icon is-small"><i class="fa fa-angle-down"></i></span>
+                                </a>
+                            </li>
+                            <li value="publicTransport" class="mode_actuel_toggle">
+                                <a>
+                                    <span class="icon is-small"><i class="fa fa-subway"></i></span>
+                                    <span id="mode_actuel_transports">Public Transportation</span>
+                                </a>
+                            </li>
+                            <li value="bicycle" class="mode_actuel_toggle">
+                                <a>
+                                    <span class="icon is-small"><i class="fa fa-bicycle"></i></span>
+                                    <span id="mode_actuel_velo">Cycling</span>
+                                </a>
+                            </li>
+                            <li value="pedestrian" class="mode_actuel_toggle">
+                                <a>
+                                    <span class="icon is-small"><i class="fa fa-street-view"></i></span>
+                                    <span id="mode_actuel_pieton">Walking</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="notification is-danger is-hidden" id="erreurFirst">
+                        <button class="delete"></button>
+                        We seem to have a hard time finding a route with these criteria, please check your data.
+                    </div>
+                    <div class="dropdown_car mode_actuel tabs is-toggle is-fullwidth is-hidden">
+                        <ul>
+                            <li class="dropdown_car_item mode_actuel" value='gasoline'>
+                                <a>
+                                    <span class="icon is-small"><i class="fa fa-thermometer-2"></i></span>
+                                    <span class="dropdown_car_item">Petrol</span>
+                                </a>
+                            </li>
+                            <li class="dropdown_car_item mode_actuel" value='diesel'>
+                                <a>
+                                    <span class="icon is-small"><i class="fa fa-thermometer-2"></i></span>
+                                    <span class="dropdown_car_item">Diesel</span>
+                                </a>
+                            </li>
+                            <li class="dropdown_car_item mode_actuel" value='electric'>
+                                <a>
+                                    <span class="icon is-small"><i class="fa fa-bolt"></i></span>
+                                    <span class="dropdown_car_item">Electric</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="tile is-6 is-vertical is-parent">
+                <div class="tile is-child box">
+                    <div id="mapContainer"></div>
+                </div>
+                <div class="tile is-child box">
+                    <p class='title'>Simulated Trip</p>
+                    <div class="mode_transport tabs is-toggle is-fullwidth">
+                        <ul>
+                            <li value="car" class="mode_compare_toggle car_toggle">
+                                <a>
+                                    <span class="icon is-small"><i class="fa fa-car"></i></span>
+                                    <span id="mode_compare_voiture">Driving</span>
+                                    <span class="icon is-small"><i class="fa fa-angle-down"></i></span>
+                                </a>
+                            </li>
+                            <li value="publicTransport" class="mode_compare_toggle">
+                                <a>
+                                    <span class="icon is-small"><i class="fa fa-subway"></i></span>
+                                    <span id="mode_compare_transports">Public Transportation</span>
+                                </a>
+                            </li>
+                            <li value="bicycle" class="mode_compare_toggle">
+                                <a>
+                                    <span class="icon is-small"><i class="fa fa-bicycle"></i></span>
+                                    <span id="mode_compare_velo">Cycling</span>
+                                </a>
+                            </li>
+                            <li value="pedestrian" class="mode_compare_toggle">
+                                <a>
+                                    <span class="icon is-small"><i class="fa fa-street-view"></i></span>
+                                    <span id="mode_compare_pieton">Walking</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="notification is-danger is-hidden" id="erreurSecond">
+                        <button class="delete"></button>
+                        We seem to have a hard time finding a route with these criteria, please check your data.
+                    </div>
+                    <div class="dropdown_car mode_compare tabs is-toggle is-fullwidth is-hidden">
+                        <ul>
+                            <li class="dropdown_car_item mode_compare" value="gasoline">
+                                <a>
+                                    <span class="icon is-small"><i class="fa fa-thermometer-2"></i></span>
+                                    <span class="dropdown_car_item">Petrol</span>
+                                </a>
+                            </li>
+                            <li class="dropdown_car_item mode_compare" value="diesel">
+                                <a>
+                                    <span class="icon is-small"><i class="fa fa-thermometer-2"></i></span>
+                                    <span class="dropdown_car_item">Diesel</span>
+                                </a>
+                            </li>
+                            <li class="dropdown_car_item mode_compare" value="electric">
+                                <a>
+                                    <span class="icon is-small"><i class="fa fa-bolt"></i></span>
+                                    <span class="dropdown_car_item">Electric</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tile is-ancestor">
+            <div class="tile is-2 is-parent">
+                <div class="tile is-child box tile-results">
+                    <span class="icon is-small"><i class="fa fa-paper-plane"></i></span>
+                    <p class='title'>Current distance</p>
+                    <div class='container-flex'>
+                        <p class='content' id="distanceActuelle">0</p>
+                        <p class='content'> km</p>
+                    </div>
+                </div>
+            </div>
+            <div class="tile is-2 is-parent">
+                <div class="tile is-child box tile-results">
+                    <span class="icon is-small"><i class="fa fa-clock-o"></i></span>
+                    <p class='title'>Time</p>
+                    <div class='container-flex'>
+                        <p class='content' id="tempsActuel">0</p>
+                        <p class='content'> min</p>
+                    </div>
+                </div>
+            </div>
+            <div class="tile is-2 is-parent">
+                <div class="tile is-child box tile-results">
+                    <span class="icon is-small"><i class="fa fa-cloud"></i></span>
+                    <p class='title'>CO2</p>
+                    <div class='container-flex'>
+                        <p class='content' id="emissionActuelle">0</p>
+                        <p class='content'> kg</p>
+                    </div>
+                </div>
+            </div>
+            <div class="tile is-2 is-parent">
+                <div class="tile is-child box tile-results">
+                    <span class="icon is-small"><i class="fa fa-paper-plane"></i></span>
+                    <p class='title'>New distance</p>
+                    <div class='container-flex'>
+                        <p class='content' id="distanceNouvelle">0</p>
+                        <p class='content'> km</p>
+                    </div>
+                </div>
+            </div>
+            <div class="tile is-2 is-parent">
+                <div class="tile is-child box tile-results">
+                    <span class="icon is-small"><i class="fa fa-clock-o"></i></span>
+                    <p class='title'>Time</p>
+                    <div class='container-flex'>
+                        <p class='content' id="tempsNouveau">0</p>
+                        <p class='content'> min</p>
+                    </div>
+                </div>
+            </div>
+            <div class="tile is-2 is-parent">
+                <div class="tile is-child box tile-results">
+                    <span class="icon is-small"><i class="fa fa-cloud"></i></span>
+                    <p class='title'>CO2</p>
+                    <div class='container-flex'>
+                        <p class='content' id="emissionNouvelle">0</p>
+                        <p class='content'> kg</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+<footer class="footer">
+  <div class="container">
+    <div class="content has-text-centered">
+      <p>
+        <strong>Trip comparison</strong> by <a href="http://kynoa.io">Kynoa.io</a>
+      </p>
+      <p>
+      </p>
+    </div>
+  </div>
+</footer>
+</html>
